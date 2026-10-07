@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ligue as Colunas — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #359668, #2E8B57); 
+            min-height: 100vh; 
+            padding: 2rem; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        .barra-topo {
+            background: white; 
+            border-radius: 8px; 
+            padding: 0.6rem 1rem;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            max-width: 550px;
+            width: 100%;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .card {
+            background: white; 
+            border-radius: 8px; 
+            padding: 1.8rem;
+            max-width: 550px; 
+            width: 100%; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .instrucao {
+            font-size: 0.95rem;
+            color: #444;
+            margin-bottom: 1.5rem;
+        }
+        .item-assoc {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background: white;
+        }
+        select:focus {
+            outline: none;
+            border-color: #2E8B57;
+        }
+        .botoes {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        button {
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            padding: 0.7rem 1.2rem;
+            cursor: pointer;
+        }
+        .btn-reiniciar {
+            background: #e9ecef;
+            color: #333;
+        }
+        .btn-confirmar {
+            background: #2E8B57;
+            color: white;
+        }
+        .btn-sair {
+            background: #e9ecef;
+            color: #333;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            align-self: flex-start;
+        }
+        .feedback {
+            margin-top: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .correta { color: #28a745; }
+        .errada { color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <div class="barra-topo">
+        <span>🔗 Ligue as Colunas</span>
+        <span id="contador">0 / 4</span>
+        <span id="pontos">0 pontos</span>
+        <span id="tentativas">20</span>
+    </div>
+
+    <div class="card">
+        <p class="instrucao"><strong>Associe cada cientista à sua contribuição:</strong><br>Escolha a contribuição correta para cada nome</p>
+
+        <div class="item-assoc">
+            <label>👩‍💻 Ada Lovelace:</label>
+            <select id="ada">
+                <option value="">Selecione...</option>
+                <option value="primeiro-algoritmo">Escreveu o primeiro algoritmo para uma máquina</option>
+                <option value="romance">Escreveu o primeiro romance brasileiro</option>
+                <option value="engenharia">Primeira engenheira negra</option>
+                <option value="fisica">Doutora em Física</option>
+            </select>
+        </div>
+
+        <div class="item-assoc">
+            <label>✍️ Maria Firmina dos Reis:</label>
+            <select id="maria">
+                <option value="">Selecione...</option>
+                <option value="primeiro-algoritmo">Escreveu o primeiro algoritmo para uma máquina</option>
+                <option value="romance">Escreveu "Úrsula", primeiro romance de uma mulher negra no Brasil</option>
+                <option value="engenharia">Primeira engenheira negra</option>
+                <option value="virus">Sequenciou o genoma do COVID-19</option>
+            </select>
+        </div>
+
+        <div class="item-assoc">
+            <label>🏗️ Enedina Alves Marques:</label>
+            <select id="enedina">
+                <option value="">Selecione...</option>
+                <option value="primeiro-algoritmo">Escreveu o primeiro algoritmo para uma máquina</option>
+                <option value="romance">Escreveu o primeiro romance brasileiro</option>
+                <option value="engenharia">Primeira mulher negra formada em Engenharia no Brasil</option>
+                <option value="fisica">Doutora em Física</option>
+            </select>
+        </div>
+
+        <div class="item-assoc">
+            <label>🔬 Jaqueline Góes de Jesus:</label>
+            <select id="jaqueline">
+                <option value="">Selecione...</option>
+                <option value="primeiro-algoritmo">Escreveu o primeiro algoritmo para uma máquina</option>
+                <option value="romance">Escreveu o primeiro romance brasileiro</option>
+                <option value="fisica">Doutora em Física</option>
+                <option value="virus">Sequenciou o genoma do coronavírus no Brasil</option>
+            </select>
+        </div>
+
+        <div class="botoes">
+            <button class="btn-reiniciar" onclick="reiniciar()">Reiniciar</button>
+            <button class="btn-confirmar" onclick="confirmar()">Confirmar</button>
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <button class="btn-sair" onclick="sair()">Sair</button>
+
+    <script>
+        let pontos = 0;
+        let tentativas = 20;
+
+        const respostasCorretas = {
+            ada: 'primeiro-algoritmo',
+            maria: 'romance',
+            enedina: 'engenharia',
+            jaqueline: 'virus'
+        };
+
+        function atualizarContador() {
+            const selecionadas = Object.keys(respostasCorretas).filter(nome => 
+                document.getElementById(nome).value !== ''
+            );
+            document.getElementById('contador').textContent = `${selecionadas.length} / 4`;
+            document.getElementById('pontos').textContent = `${pontos} pontos`;
+            document.getElementById('tentativas').textContent = tentativas;
+        }
+
+        document.querySelectorAll('select').forEach(s => {
+            s.addEventListener('change', atualizarContador);
+        });
+
+        function reiniciar() {
+            Object.keys(respostasCorretas).forEach(nome => {
+                document.getElementById(nome).value = '';
+            });
+            document.getElementById('feedback').innerHTML = '';
+            atualizarContador();
+        }
+
+        function confirmar() {
+            let acertos = 0;
+            let vazias = false;
+
+            for (const [nome, valorCorreto] of Object.entries(respostasCorretas)) {
+                const selecionado = document.getElementById(nome).value;
+                if (selecionado === valorCorreto) {
+                    acertos++;
+                } else if (selecionado === '') {
+                    vazias = true;
+                }
+            }
+
+            if (vazias) {
+                document.getElementById('feedback').innerHTML = '<span class="errada">⚠️ Selecione todas as opções!</span>';
+                return;
+            }
+
+            if (acertos === 4) {
+                document.getElementById('feedback').innerHTML = '<span class="correta">✅ Parabéns! Todas corretas!</span>';
+                pontos += 20;
+                salvarResultado();
+                setTimeout(() => {
+                    alert(`🎉 Você concluiu com ${pontos} pontos!`);
+                    window.location.href = 'modalidades.html';
+                }, 1500);
+            } else {
+                document.getElementById('feedback').innerHTML = `<span class="errada">❌ Você acertou ${acertos} de 4. Tente novamente!</span>`;
+                tentativas--;
+                document.getElementById('tentativas').textContent = tentativas;
+                if (tentativas <= 0) {
+                    alert('😢 Suas tentativas acabaram!');
+                    window.location.href = 'modalidades.html';
+                }
+            }
+        }
+
+        function salvarResultado() {
+            localStorage.setItem('pontosJogador', parseInt(localStorage.getItem('pontosJogador') || '0') + pontos);
+        }
+
+        function sair() {
+            if (confirm('Tem certeza que deseja sair? Seu progresso será perdido.')) {
+                window.location.href = 'modalidades.html';
+            }
+        }
+    </script>
+
+</body>
+</html>

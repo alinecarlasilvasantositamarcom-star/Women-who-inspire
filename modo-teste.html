@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Teste — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f0f7f0; min-height: 100vh; padding: 2rem; display: flex; align-items: center; justify-content: center; }
+        .container-formulario { width: 100%; max-width: 700px; }
+        .card-formulario {
+            background: white; padding: 2.5rem; border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .card-formulario h1 { color: #1B5E20; font-size: 1.8rem; margin-bottom: 0.3rem; }
+        .card-formulario h2 { color: #333; font-size: 1.2rem; margin-bottom: 1rem; font-weight: 600; }
+        .instrucao { color: #666; font-size: 0.95rem; margin-bottom: 1.5rem; }
+        #btnLeituraForm {
+            padding: 0.5rem 1rem; background: #0288D1; color: white; border: none;
+            border-radius: 6px; cursor: pointer; font-size: 0.95rem; margin-bottom: 1.5rem;
+        }
+        form { display: flex; flex-direction: column; gap: 1.2rem; }
+        .grid-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .grupo-form { display: flex; flex-direction: column; gap: 0.4rem; }
+        .grupo-form label { font-weight: 600; color: #333; font-size: 0.95rem; }
+        select, textarea {
+            padding: 0.7rem; border: 1px solid #ccc; border-radius: 6px;
+            font-size: 0.95rem; background: white;
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        .botoes-form { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; }
+        button { padding: 0.7rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 600; }
+        .btn-principal { background: #2E7D32; color: white; }
+        .btn-principal:hover { background: #1B5E20; }
+        .btn-secundario { background: #e0e0e0; color: #333; }
+        .btn-secundario:hover { background: #d0d0d0; }
+        @media(max-width: 550px) { .grid-dupla { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body class="tela-formulario">
+
+    <div class="container-formulario">
+        <div class="card-formulario">
+            <h1>Registro de Teste</h1>
+            <h2>Ficha Rápida de Observação</h2>
+            <p class="instrucao">Este registro é para a equipe do projeto. Não informe o nome do estudante neste protótipo.</p>
+
+            <button id="btnLeituraForm" onclick="alternarLeitura()">🔊 Leitura: Desligada</button>
+
+            <form id="formRegistro">
+                <div class="grid-dupla">
+                    <div class="grupo-form">
+                        <label for="compreendeu">Compreendeu as instruções?</label>
+                        <select id="compreendeu" required>
+                            <option value="">Selecione...</option>
+                            <option value="sim">Sim</option>
+                            <option value="parcialmente">Parcialmente</option>
+                            <option value="nao">Não</option>
+                        </select>
+                    </div>
+                    <div class="grupo-form">
+                        <label for="autonomia">Realizou com autonomia?</label>
+                        <select id="autonomia" required>
+                            <option value="">Selecione...</option>
+                            <option value="sim">Sim</option>
+                            <option value="com-ajuda">Com ajuda</option>
+                            <option value="nao">Não</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-dupla">
+                    <div class="grupo-form">
+                        <label for="estimulo">Estímulo preferido</label>
+                        <select id="estimulo">
+                            <option value="">Selecione...</option>
+                            <option value="imagem">Imagem</option>
+                            <option value="texto">Texto</option>
+                            <option value="audio">Áudio</option>
+                            <option value="tato">Tato / Manipulação</option>
+                        </select>
+                    </div>
+                    <div class="grupo-form">
+                        <label for="dificuldade">Dificuldade percebida</label>
+                        <select id="dificuldade">
+                            <option value="">Selecione...</option>
+                            <option value="nenhuma">Nenhuma</option>
+                            <option value="baixa">Baixa</option>
+                            <option value="media">Média</option>
+                            <option value="alta">Alta</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grupo-form">
+                    <label for="observacoes">Observações</label>
+                    <textarea id="observacoes" rows="5" placeholder="Registre dificuldades, ajudas necessárias ou sugestões..."></textarea>
+                </div>
+                <div class="botoes-form">
+                    <button type="button" onclick="voltarPrincipal()" class="btn-secundario">Voltar</button>
+                    <button type="submit" class="btn-principal">Salvar Registro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let leituraAtiva = false;
+        const sintese = window.speechSynthesis;
+
+        function alternarLeitura() {
+            leituraAtiva = !leituraAtiva;
+            document.getElementById('btnLeituraForm').innerHTML = leituraAtiva ? '🔊 Leitura: Ligada' : '🔇 Leitura: Desligada';
+            if (!leituraAtiva) sintese.cancel();
+        }
+
+        document.getElementById('formRegistro').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const registro = {
+                compreendeu: document.getElementById('compreendeu').value,
+                autonomia: document.getElementById('autonomia').value,
+                estimulo: document.getElementById('estimulo').value,
+                dificuldade: document.getElementById('dificuldade').value,
+                observacoes: document.getElementById('observacoes').value,
+                data: new Date().toLocaleString('pt-BR')
+            };
+            localStorage.setItem('registroTeste', JSON.stringify(registro));
+            alert('Registro salvo! Bom jogo! 🎮');
+            window.location.href = 'jogo-adaptado.html';
+        });
+
+        function voltarPrincipal() {
+            window.location.href = 'principal.html';
+        }
+    </script>
+
+</body>
+</html>

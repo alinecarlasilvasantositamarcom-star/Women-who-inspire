@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créditos — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body {
+            background: linear-gradient(135deg, #1B5E20, #2E7D32);
+            min-height: 100vh; padding: 2rem;
+            display: flex; align-items: center; justify-content: center;
+            color: white; text-align: center;
+        }
+        .container { max-width: 600px; }
+        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .emoji { font-size: 4rem; margin-bottom: 1rem; }
+        p { font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem; opacity: 0.9; }
+        .destaque { color: #FFD700; font-weight: bold; }
+        button {
+            padding: 0.9rem 2rem; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 1.1rem; font-weight: 600;
+            background: #FFD700; color: #1B5E20; transition: all 0.3s;
+        }
+        button:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(255,215,0,0.3); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="emoji">🎉</div>
+        <h1>Parabéns!</h1>
+        <h2>Você concluiu o jogo!</h2>
+        
+        <p>
+            Obrigado(a) por jogar! <br><br>
+            Você conheceu um pouco mais sobre a história de 
+            <span class="destaque">6 mulheres extraordinárias</span> 
+            que mudaram o mundo com sua dedicação, inteligência e coragem.<br><br>
+            Que elas possam inspirar você também! 💚
+        </p>
+
+        <button onclick="reiniciar()">🔄 Jogar Novamente</button>
+    </div>
+
+    <script>
+        function reiniciar() {
+            localStorage.removeItem('pontosJogador');
+            localStorage.removeItem('chancesJogador');
+            localStorage.removeItem('leituraCompleta');
+            localStorage.removeItem('registroTeste');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+</body>
+</html>

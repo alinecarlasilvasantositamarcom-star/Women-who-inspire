@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introdução — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f0f7f0; color: #212121; min-height: 100vh; padding: 2rem; }
+        .cabecalho-intro { text-align: center; margin-bottom: 2rem; }
+        .cabecalho-intro h1 { color: #1B5E20; margin-bottom: 0.5rem; }
+        .aviso-leitura { font-size: 1.05rem; color: #444; max-width: 800px; margin: 0 auto 1rem; }
+        #btnLeituraAuto {
+            padding: 0.5rem 1rem; background: #0288D1; color: white; border: none;
+            border-radius: 6px; cursor: pointer; font-size: 0.95rem; margin-top: 0.5rem;
+        }
+        .container-cards {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+            gap: 2rem; justify-content: center; max-width: 1400px; margin: 0 auto 3rem;
+        }
+        .card-yugioh {
+            background: linear-gradient(145deg, #fff, #f0f0f0);
+            border: 3px solid #8B4513; border-radius: 12px; width: 280px; height: 400px;
+            cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.5);
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .card-yugioh:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.2); }
+        .card-yugioh.lido { border-color: #2E7D32; background: linear-gradient(145deg, #f0fff4, #e8f5e9); }
+        .card-imagem { height: 160px; background: #e0e0e0; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 2px solid #8B4513; }
+        .card-imagem img { width: 100%; height: 100%; object-fit: cover; }
+        .card-conteudo { padding: 0.8rem; flex: 1; display: flex; flex-direction: column; }
+        .card-conteudo h3 { font-size: 1rem; color: #1B5E20; margin-bottom: 0.5rem; text-align: center; }
+        .card-texto { font-size: 0.85rem; line-height: 1.4; color: #333; flex: 1; }
+        .card-status { padding: 0.5rem; text-align: center; font-size: 0.85rem; font-weight: bold; background: #f5f5f5; border-top: 1px solid #ddd; }
+        .botoes-inferiores { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 2rem; }
+        button { padding: 0.9rem 2rem; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .btn-principal { background: #ccc; color: #666; cursor: not-allowed; }
+        .btn-principal.habilitado { background: #2E7D32; color: white; cursor: pointer; }
+        .btn-principal.habilitado:hover { background: #1B5E20; }
+        .btn-secundario { background: #e0e0e0; color: #333; }
+        .btn-secundario:hover { background: #d0d0d0; }
+    </style>
+</head>
+<body class="tela-introducao">
+
+    <div class="cabecalho-intro">
+        <h1>📖 Introdução — Leitura Necessária</h1>
+        <p class="aviso-leitura">Antes de avançarmos no jogo, é necessária uma leitura para compreendermos mais os desafios. Leia os cards a seguir para depois avançar.</p>
+        <button id="btnLeituraAuto" onclick="alternarLeitura()">🔊 Leitura: Desligada</button>
+    </div>
+
+    <div class="container-cards">
+        <div class="card-yugioh" id="card1" onclick="marcarLido(1)">
+            <div class="card-imagem"><img src="imagens/sonia-guimaraes.jpg" alt="Sonia Guimarães"></div>
+            <div class="card-conteudo"><h3>Sonia Guimarães</h3><p class="card-texto">Primeira mulher negra doutora em Física no Brasil e primeira professora negra do ITA. Atua na promoção da diversidade na ciência.</p></div>
+            <div class="card-status" id="status1">❌ Não lido</div>
+        </div>
+        <div class="card-yugioh" id="card2" onclick="marcarLido(2)">
+            <div class="card-imagem"><img src="imagens/ada-lovelace.jpg" alt="Ada Lovelace"></div>
+            <div class="card-conteudo"><h3>Ada Lovelace</h3><p class="card-texto">Considerada a primeira programadora de computadores da história. Escreveu o primeiro algoritmo para ser processado por uma máquina.</p></div>
+            <div class="card-status" id="status2">❌ Não lido</div>
+        </div>
+        <div class="card-yugioh" id="card3" onclick="marcarLido(3)">
+            <div class="card-imagem"><img src="imagens/enedina-alves-marques.jpg" alt="Enedina Alves Marques"></div>
+            <div class="card-conteudo"><h3>Enedina Alves Marques</h3><p class="card-texto">Primeira mulher negra a se formar em Engenharia no Brasil, em 1945. Superou grandes barreiras raciais e sociais.</p></div>
+            <div class="card-status" id="status3">❌ Não lido</div>
+        </div>
+        <div class="card-yugioh" id="card4" onclick="marcarLido(4)">
+            <div class="card-imagem"><img src="imagens/ana-angelica-macedo.jpg" alt="Ana Angélica Macêdo"></div>
+            <div class="card-conteudo"><h3>Ana Angélica Macêdo</h3><p class="card-texto">Pesquisadora e educadora que trabalha para incentivar meninas e mulheres na área de ciência e tecnologia.</p></div>
+            <div class="card-status" id="status4">❌ Não lido</div>
+        </div>
+        <div class="card-yugioh" id="card5" onclick="marcarLido(5)">
+            <div class="card-imagem"><img src="imagens/maria-firmina-dos-reis.jpg" alt="Maria Firmina dos Reis"></div>
+            <div class="card-conteudo"><h3>Maria Firmina dos Reis</h3><p class="card-texto">Escreveu o romance "Úrsula" em 1859, considerado o primeiro romance da literatura brasileira. Foi também professora e poetisa.</p></div>
+            <div class="card-status" id="status5">❌ Não lido</div>
+        </div>
+        <div class="card-yugioh" id="card6" onclick="marcarLido(6)">
+            <div class="card-imagem"><img src="imagens/jaqueline-goes-de-jesus.jpg" alt="Jaqueline Góes de Jesus"></div>
+            <div class="card-conteudo"><h3>Jaqueline Góes de Jesus</h3><p class="card-texto">Liderou a equipe que sequenciou o genoma do coronavírus no Brasil em apenas 48 horas. Pesquisadora da Fiocruz.</p></div>
+            <div class="card-status" id="status6">❌ Não lido</div>
+        </div>
+    </div>
+
+    <div class="botoes-inferiores">
+        <button onclick="voltarInicio()" class="btn-secundario">← Retornar à Tela Inicial</button>
+        <button id="btnConfirmar" onclick="confirmarLeitura()" class="btn-principal" disabled>✅ Confirmar Leitura</button>
+    </div>
+
+    <script>
+        let cardsLidos = new Set();
+        let leituraAtiva = false;
+        const sintese = window.speechSynthesis;
+
+        function marcarLido(numero) {
+            if (!cardsLidos.has(numero)) {
+                cardsLidos.add(numero);
+                document.getElementById(`status${numero}`).innerHTML = '✅ Lido';
+                document.getElementById(`card${numero}`).classList.add('lido');
+                verificarTodosLidos();
+            }
+            if (leituraAtiva) {
+                const card = document.getElementById(`card${numero}`);
+                const texto = card.querySelector('.card-texto').textContent;
+                sintese.cancel();
+                const fala = new SpeechSynthesisUtterance(texto);
+                fala.lang = 'pt-BR'; fala.rate = 1;
+                sintese.speak(fala);
+            }
+        }
+
+        function alternarLeitura() {
+            leituraAtiva = !leituraAtiva;
+            document.getElementById('btnLeituraAuto').innerHTML = leituraAtiva ? '🔊 Leitura: Ligada' : '🔇 Leitura: Desligada';
+            if (!leituraAtiva) sintese.cancel();
+        }
+
+        function verificarTodosLidos() {
+            if (cardsLidos.size === 6) {
+                const btn = document.getElementById('btnConfirmar');
+                btn.disabled = false;
+                btn.classList.add('habilitado');
+            }
+        }
+
+        function confirmarLeitura() {
+            localStorage.setItem('leituraCompleta', 'true');
+            window.location.href = 'principal.html';
+        }
+
+        function voltarInicio() {
+            if (confirm('Tem certeza que deseja voltar? Seu progresso será perdido.')) {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+
+</body>
+</html>

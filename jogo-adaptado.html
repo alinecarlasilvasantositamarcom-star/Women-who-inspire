@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo Adaptado — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f0f7f0; min-height: 100vh; padding: 2rem; }
+        .barra-progresso {
+            height: 10px; background: #e0e0e0; border-radius: 5px; margin-bottom: 2rem; overflow: hidden;
+        }
+        .progresso {
+            height: 100%; background: linear-gradient(90deg, #1B5E20, #2E7D32);
+            width: 0%; transition: width 0.5s ease;
+        }
+        .container-questao {
+            max-width: 700px; margin: 0 auto; background: white; padding: 2.5rem;
+            border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        .numero-questao { font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; }
+        .pergunta { font-size: 1.3rem; color: #212121; margin-bottom: 2rem; line-height: 1.6; }
+        .imagem-mulher {
+            width: 180px; height: 180px; object-fit: cover; border-radius: 12px;
+            margin: 0 auto 1.5rem; display: block; border: 4px solid #2E7D32;
+        }
+        .alternativas { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2rem; }
+        .alternativa {
+            padding: 1rem 1.2rem; border: 2px solid #e0e0e0; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s; font-size: 1rem;
+        }
+        .alternativa:hover { border-color: #2E7D32; background: #f0f7f0; }
+        .alternativa.correta { border-color: #2E7D32; background: #d4edda; }
+        .alternativa.errada { border-color: #dc3545; background: #f8d7da; }
+        .botoes-navegacao { display: flex; justify-content: space-between; margin-top: 2rem; }
+        button {
+            padding: 0.8rem 1.5rem; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-anterior { background: #e0e0e0; color: #333; }
+        .btn-anterior:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-proxima { background: #2E7D32; color: white; }
+        .btn-proxima:hover { background: #1B5E20; }
+        .btn-som {
+            position: absolute; top: 1rem; right: 1rem; background: #0288D1; color: white;
+            padding: 0.5rem 1rem; font-size: 0.9rem;
+        }
+        .caixa-questao { position: relative; }
+    </style>
+</head>
+<body>
+
+    <div class="barra-progresso">
+        <div class="progresso" id="barraProgresso"></div>
+    </div>
+
+    <div class="container-questao">
+        <div class="caixa-questao">
+            <button class="btn-som" onclick="falarQuestao()">🔊 Ouvir</button>
+            
+            <p class="numero-questao">Questão <span id="numQuestao">1</span> de 7</p>
+            
+            <img id="imgMulher" src="imagens/sonia-guimaraes.jpg" alt="Sonia Guimarães" class="imagem-mulher">
+            
+            <h2 class="pergunta" id="textoPergunta">
+                Quem é a primeira mulher negra a se tornar doutora em Física no Brasil?
+            </h2>
+
+            <div class="alternativas" id="areaAlternativas">
+                <div class="alternativa" onclick="verificarResposta(this, false)">Maria Firmina dos Reis</div>
+                <div class="alternativa" onclick="verificarResposta(this, true)">Sonia Guimarães</div>
+                <div class="alternativa" onclick="verificarResposta(this, false)">Enedina Alves Marques</div>
+                <div class="alternativa" onclick="verificarResposta(this, false)">Ana Angélica Macêdo</div>
+            </div>
+        </div>
+
+        <div class="botoes-navegacao">
+            <button class="btn-anterior" id="btnAnterior" onclick="questaoAnterior()">← Questão Anterior</button>
+            <button class="btn-proxima" id="btnProxima" onclick="proximaQuestao()">Próxima Questão →</button>
+        </div>
+    </div>
+
+    <script>
+        let questaoAtual = 1;
+        let totalQuestoes = 7;
+        let respostaSelecionada = false;
+        const sintese = window.speechSynthesis;
+
+        const questoes = [
+            {
+                imagem: 'imagens/sonia-guimaraes.jpg',
+                pergunta: 'Quem é a primeira mulher negra a se tornar doutora em Física no Brasil?',
+                alternativas: ['Maria Firmina dos Reis', 'Sonia Guimarães', 'Enedina Alves Marques', 'Ana Angélica Macêdo'],
+                correta: 1
+            },
+            {
+                imagem: 'imagens/ada-lovelace.jpg',
+                pergunta: 'Quem é considerada a primeira programadora de computadores da história?',
+                alternativas: ['Ada Lovelace', 'Marie Curie', 'Rosalind Franklin', 'Katherine Johnson'],
+                correta: 0
+            },
+            {
+                imagem: 'imagens/enedina-alves-marques.jpg',
+                pergunta: 'Quem foi a primeira mulher negra a se formar em Engenharia no Brasil?',
+                alternativas: ['Sonia Guimarães', 'Jaqueline Góes de Jesus', 'Enedina Alves Marques', 'Ana Angélica Macêdo'],
+                correta: 2
+            },
+            {
+                imagem: 'imagens/ana-angelica-macedo.jpg',
+                pergunta: 'Quem é a pesquisadora que incentiva meninas a entrarem na área de ciência e tecnologia?',
+                alternativas: ['Ana Angélica Macêdo', 'Maria Firmina dos Reis', 'Sonia Guimarães', 'Jaqueline Góes de Jesus'],
+                correta: 0
+            },
+            {
+                imagem: 'imagens/maria-firmina-dos-reis.jpg',
+                pergunta: 'Quem escreveu o primeiro romance da literatura brasileira, publicado em 1859?',
+                alternativas: ['Jaqueline Góes de Jesus', 'Maria Firmina dos Reis', 'Enedina Alves Marques', 'Sonia Guimarães'],
+                correta: 1
+            },
+            {
+                imagem: 'imagens/jaqueline-goes-de-jesus.jpg',
+                pergunta: 'Quem liderou a equipe que sequenciou o genoma do coronavírus no Brasil em 2020?',
+                alternativas: ['Ana Angélica Macêdo', 'Sonia Guimarães', 'Jaqueline Góes de Jesus', 'Ada Lovelace'],
+                correta: 2
+            },
+            {
+                imagem: 'imagens/sonia-guimaraes.jpg',
+                pergunta: 'Parabéns! Você concluiu todas as questões! 🎉',
+                alternativas: ['Ver resultados', 'Jogar novamente', 'Voltar ao menu principal'],
+                correta: null
+            }
+        ];
+
+        function carregarQuestao(numero) {
+            respostaSelecionada = false;
+            const q = questoes[numero - 1];
+            
+            document.getElementById('numQuestao').textContent = numero;
+            document.getElementById('imgMulher').src = q.imagem;
+            document.getElementById('textoPergunta').textContent = q.pergunta;
+            
+            const progresso = (numero / totalQuestoes) * 100;
+            document.getElementById('barraProgresso').style.width = `${progresso}%`;
+            
+            const area = document.getElementById('areaAlternativas');
+            area.innerHTML = '';
+            q.alternativas.forEach((texto, indice) => {
+                const div = document.createElement('div');
+                div.className = 'alternativa';
+                div.textContent = texto;
+                if (q.correta !== null) {
+                    div.onclick = () => verificarResposta(div, indice === q.correta);
+                } else {
+                    div.onclick = () => {
+                        if (indice === 0) alert('✅ Progresso salvo!');
+                        else if (indice === 1) window.location.reload();
+                        else window.location.href = 'principal.html';
+                    };
+                }
+                area.appendChild(div);
+            });
+
+            document.getElementById('btnAnterior').disabled = numero === 1;
+            document.getElementById('btnProxima').style.display = numero === totalQuestoes ? 'none' : 'inline-block';
+        }
+
+        function verificarResposta(elemento, estaCorreta) {
+            if (respostaSelecionada) return;
+            respostaSelecionada = true;
+            
+            const todas = document.querySelectorAll('.alternativa');
+            todas.forEach(el => el.style.pointerEvents = 'none');
+            
+            if (estaCorreta) {
+                elemento.classList.add('correta');
+                adicionarPontos(10);
+            } else {
+                elemento.classList.add('errada');
+                usarChance();
+                todas[questoes[questaoAtual - 1].correta].classList.add('correta');
+            }
+        }
+
+        function questaoAnterior() {
+            if (questaoAtual > 1) {
+                questaoAtual--;
+                carregarQuestao(questaoAtual);
+            }
+        }
+
+        function proximaQuestao() {
+            if (questaoAtual < totalQuestoes) {
+                questaoAtual++;
+                carregarQuestao(questaoAtual);
+            }
+        }
+
+        function falarQuestao() {
+            const texto = document.getElementById('textoPergunta').textContent;
+            sintese.cancel();
+            const fala = new SpeechSynthesisUtterance(texto);
+            fala.lang = 'pt-BR';
+            fala.rate = 1;
+            sintese.speak(fala);
+        }
+
+        function adicionarPontos(qtd) {
+            let atual = parseInt(localStorage.getItem('pontosJogador') || '0');
+            localStorage.setItem('pontosJogador', atual + qtd);
+        }
+
+        function usarChance() {
+            let atual = parseInt(localStorage.getItem('chancesJogador') || '3');
+            if (atual > 0) localStorage.setItem('chancesJogador', atual - 1);
+        }
+
+        carregarQuestao(1);
+    </script>
+
+</body>
+</html>

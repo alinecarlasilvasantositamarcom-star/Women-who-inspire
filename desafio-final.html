@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Desafio Final — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #1B5E20, #0D3D11); 
+            min-height: 100vh; 
+            padding: 2rem; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        .barra-topo {
+            background: linear-gradient(90deg, #FFD700, #FFC107); 
+            border-radius: 8px; 
+            padding: 0.7rem 1.2rem;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 1rem;
+            font-weight: bold; 
+            color: #1B5E20;
+            box-shadow: 0 4px 12px rgba(255,215,0,0.3);
+        }
+        .dificuldade {
+            background: #d32f2f; 
+            color: white; 
+            padding: 0.25rem 0.7rem; 
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        .barra-progresso { 
+            width: 600px; 
+            height: 10px; 
+            background: rgba(255,255,255,0.2); 
+            border-radius: 5px; 
+            overflow: hidden;
+            margin-bottom: 2rem; 
+        }
+        .progresso { 
+            height: 100%; 
+            background: linear-gradient(90deg, #FFD700, #FF9800); 
+            width: 0%; 
+            transition: width 0.4s; 
+        }
+        .card {
+            background: white; 
+            border-radius: 12px; 
+            padding: 2rem;
+            max-width: 600px; 
+            width: 100%; 
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+        .fase-titulo {
+            font-size: 1.2rem;
+            color: #1B5E20;
+            margin-bottom: 0.5rem;
+        }
+        .fase-subtitulo {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        .pergunta {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            color: #222;
+        }
+        
+        /* FASE 1: Análise Crítica */
+        .bloco-texto {
+            background: #f8f9fa;
+            padding: 1.2rem;
+            border-radius: 6px;
+            border-left: 4px solid #2E7D32;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .resposta-curta {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .resposta-curta:focus { outline: none; border-color: #2E7D32; }
+        
+        /* FASE 2: Mapeamento de Trajetória */
+        .tabela-trajetoria {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .tabela-trajetoria th,
+        .tabela-trajetoria td {
+            border: 1px solid #ddd;
+            padding: 0.7rem;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        .tabela-trajetoria th {
+            background: #E8F5E9;
+            color: #1B5E20;
+        }
+        .tabela-trajetoria input {
+            width: 100%;
+            padding: 0.4rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        /* FASE 3: Identificação de Barreiras */
+        .afirmacao-analise {
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 0.8rem;
+            border-left: 4px solid #ccc;
+        }
+        .afirmacao-analise.correta { border-left-color: #4CAF50; background: #E8F5E9; }
+        .afirmacao-analise.errada { border-left-color: #d32f2f; background: #ffebee; }
+        .opcao-analise {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .opcao-analise label {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .opcao-analise input:checked + label {
+            background: #2E7D32;
+            color: white;
+            border-color: #2E7D32;
+        }
+        .opcao-analise input { display: none; }
+        
+        /* FASE 4: Síntese Argumentativa */
+        .texto-longo {
+            width: 100%;
+            min-height: 140px;
+            padding: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+        .texto-longo:focus { outline: none; border-color: #2E7D32; }
+        
+        /* FASE 5: Conexões entre Histórias */
+        .item-conexao {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        .item-conexao strong { color: #1B5E20; }
+        
+        .botoes {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.9; }
+        .btn-voltar { background: #e0e0e0; color: #333; }
+        .btn-avancar { background: #2E7D32; color: white; }
+        .btn-concluir { background: #FFD700; color: #1B5E20; }
+        .btn-sair {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+        }
+        .feedback {
+            margin-top: 1rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 1.5rem;
+        }
+        .correta-msg { color: #2E7D32; }
+        .errada-msg { color: #d32f2f; }
+        .resultado-final {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        .resultado-final h2 {
+            font-size: 2rem;
+            color: #1B5E20;
+            margin-bottom: 1rem;
+        }
+        .resultado-final p {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+        .oculto { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="barra-topo">
+        <span>🏆 Desafio Final</span>
+        <span id="faseAtual">Fase 1 de 5</span>
+        <span id="pontos">0 pontos</span>
+        <span class="dificuldade">Difícil</span>
+    </div>
+
+    <div class="barra-progresso">
+        <div class="progresso" id="barraProgresso"></div>
+    </div>
+
+    <div class="card" id="areaJogo">
+
+        <!-- ===== FASE 1: Análise Crítica e Contextualização ===== -->
+        <div id="fase1">
+            <h2 class="fase-titulo">📖 Fase 1 — Análise Contextual</h2>
+            <p class="fase-subtitulo">Leia com atenção e responda às perguntas com suas palavras.</p>
+
+            <div class="bloco-texto">
+                <strong>Texto para análise:</strong><br>
+                "Maria Firmina dos Reis publicou 'Úrsula' em 1859, no Maranhão, em uma época em que o Brasil ainda mantinha a escravidão e as mulheres tinham pouquíssimo acesso à educação e à vida pública. Sua obra não apenas conta uma história, mas denuncia a escravidão e dá voz a personagens negros. Mais de 150 anos depois, Jaqueline Góes de Jesus liderava uma equipe que sequenciou o genoma do coronavírus no Brasil em tempo recorde, em um contexto de pandemia global."
+            </div>
+
+            <p class="pergunta"><strong>1.</strong> Qual a importância de compreender que mulheres como Maria Firmina dos Reis e Jaqueline Góes de Jesus, em épocas tão diferentes, enfrentaram barreiras semelhantes para exercerem suas profissões?</p>
+            <input type="text" class="resposta-curta" id="resp1-1" placeholder="Digite sua resposta aqui...">
+
+            <p class="pergunta"><strong>2.</strong> Por que, na sua opinião, a história de mulheres como Enedina Alves Marques — primeira mulher negra engenheira do Brasil — não aparece com frequência nos livros didáticos?</p>
+            <input type="text" class="resposta-curta" id="resp1-2" placeholder="Digite sua resposta aqui...">
+
+            <div class="botoes">
+                <button class="btn-avancar" onclick="validarFase1()">Avançar →</button>
+            </div>
+            <div id="feedback1" class="feedback"></div>
+        </div>
+
+        <!-- ===== FASE 2: Mapeamento de Trajetórias ===== -->
+        <div id="fase2" class="oculto">
+            <h2 class="fase-titulo">🗺️ Fase 2 — Trajetórias de Vida</h2>
+            <p class="fase-subtitulo">Complete as lacunas com as informações corretas sobre cada trajetória.</p>
+
+            <table class="tabela-trajetoria">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Ano de nascimento</th>
+                        <th>Principal área</th>
+                        <th>Por que foi pioneira?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ada Lovelace</td>
+                        <td><input type="text" id="ada-ano" placeholder="Ano"></td>
+                        <td><input type="text" id="ada-area" placeholder="Área"></td>
+                        <td><input type="text" id="ada-pioneira" placeholder="Motivo"></td>
+                    </tr>
+                    <tr>
+                        <td>Maria Firmina dos Reis</td>
+                        <td><input type="text" id="maria-ano" placeholder="Ano"></td>
+                        <td><input type="text" id="maria-area" placeholder="Área"></td>
+                        <td><input type="text" id="maria-pioneira" placeholder="Motivo"></td>
+                    </tr>
+                    <tr>
+                        <td>Sonia Guimarães</td>
+                        <td><input type="text" id="sonia-ano" placeholder="Ano"></td>
+                        <td><input type="text" id="sonia-area" placeholder="Área"></td>
+                        <td><input type="text" id="sonia-pioneira" placeholder="Motivo"></td>
+                    </tr>
+                    <tr>
+                        <td>Jaqueline Góes de Jesus</td>
+                        <td><input type="text" id="jaqueline-ano" placeholder="Ano"></td>
+                        <td><input type="text" id="jaqueline-area" placeholder="Área"></td>
+                        <td><input type="text" id="jaqueline-pioneira" placeholder="Motivo"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="botoes">
+                <button class="btn-voltar" onclick="voltarFase(1)">← Voltar</button>
+                <button class="btn-avancar" onclick="verificarFase2()">Verificar e Avançar</button>
+            </div>
+            <div id="feedback2" class="feedback"></div>
+        </div>
+
+        <!-- ===== FASE 3: Identificação de Barreiras e Desafios ===== -->
+        <div id="fase3" class="oculto">
+            <h2 class="fase-titulo">🔍 Fase 3 — Barreiras Superadas</h2>
+            <p class="fase-subtitulo">Para cada afirmação, identifique qual tipo de barreira essas mulheres enfrentaram e marque a alternativa correta.</p>
+
+            <div id="listaAfirmacoes">
+                <div class="afirmacao-analise" id="af3-1">
+                    <p><strong>1.</strong> Enedina Alves Marques precisou estudar em escolas públicas e trabalhar desde jovem para conseguir se formar, pois não havia incentivo para mulheres negras ingressarem na universidade.</p>
+                    <div class="opcao-analise">
+                        <input type="radio" name="af3-1" id="af3-1-a" value="econ">
+                        <label for="af3-1-a">Econômica e racial</label>
+                        <input type="radio" name="af3-1" id="af3-1-b" value="genero">
+                        <label for="af3-1-b">Apenas de gênero</label>
+                        <input type="radio" name="af3-1" id="af3-1-c" value="fisica">
+                        <label for="af3-1-c">Física</label>
+                    </div>
+                </div>
+
+                <div class="afirmacao-analise" id="af3-2">
+                    <p><strong>2.</strong> Ada Lovelace foi educada em casa por tutores particulares, pois na Inglaterra do século XIX as mulheres não podiam frequentar universidades.</p>
+                    <div class="opcao-analise">
+                        <input type="radio" name="af3-2" id="af3-2-a" value="racial">
+                        <label for="af3-2-a">Racial</label>
+                        <input type="radio" name="af3-2" id="af3-2-b" value="genero">
+                        <label for="af3-2-b">De gênero e acesso à educação</label>
+                        <input type="radio" name="af3-2" id="af3-2-c" value="economica">
+                        <label for="af3-2-c">Econômica</label>
+                    </div>
+                </div>
+
+                <div class="afirmacao-analise" id="af3-3">
+                    <p><strong>3.</strong> Sonia Guimarães relata que, durante a graduação, era frequentemente a única mulher negra nas salas de aula de Física e ouvia comentários de que "ciência não era lugar para mulheres".</p>
+                    <div class="opcao-analise">
+                        <input type="radio" name="af3-3" id="af3-3-a" value="social">
+                        <label for="af3-3-a">Social, racial e de gênero</label>
+                        <input type="radio" name="af3-3" id="af3-3-b" value="apenasgenero">
+                        <label for="af3-3-b">Apenas de gênero</label>
+                        <input type="radio" name="af3-3" id="af3-3-c" value="politica">
+                        <label for="af3-3-c">Política</label>
+                    </div>
+                </div>
+
+                <div class="afirmacao-analise" id="af3-4">
+                    <p><strong>4.</strong> Ana Angélica Macêdo desenvolve pesquisas que buscam tornar a matemática mais acessível, pois sabe que muitos estudantes são excluídos por barreiras que não são de capacidade, mas de oportunidade.</p>
+                    <div class="opcao-analise">
+                        <input type="radio" name="af3-4" id="af3-4-a" value="educacional">
+                        <label for="af3-4-a">Educacional e de acesso</label>
+                        <input type="radio" name="af3-4" id="af3-4-b" value="economica">
+                        <label for="af3-4-b">Apenas econômica</label>
+                        <input type="radio" name="af3-4" id="af3-4-c" value="nenhuma">
+                        <label for="af3-4-c">Nenhuma barreira</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="botoes">
+                <button class="btn-voltar" onclick="voltarFase(2)">← Voltar</button>
+                <button class="btn-avancar" onclick="verificarFase3()">Confirmar e Avançar</button>
+            </div>
+            <div id="feedback3" class="feedback"></div>
+        </div>
+
+        <!-- ===== FASE 4: Síntese Argumentativa ===== -->
+        <div id="fase4" class="oculto">
+            <h2 class="fase-titulo">✍️ Fase 4 — Síntese Argumentativa</h2>
+            <p class="fase-subtitulo">Escreva um texto curto e bem estruturado. Use pelo menos 3 frases.</p>
+
+            <p class="pergunta"><strong>Em sua opinião, por que é fundamental estudar e valorizar a história de mulheres como Enedina Alves Marques, Sonia Guimarães e Maria Firmina dos Reis? Como o conhecimento sobre essas mulheres pode inspirar novas gerações, especialmente meninas e meninos negros e periféricos?</strong></p>
+            
+            <textarea class="texto-longo" id="respostaSintese" placeholder="Escreva seu texto aqui... Lembre-se: quanto mais completo e sincero, melhor!"></textarea>
+
+            <div class="botoes">
+                <button class="btn-voltar" onclick="voltarFase(3)">← Voltar</button>
+                <button class="btn-avancar" onclick="validarFase4()">Avançar →</button>
+            </div>
+            <div id="feedback4" class="feedback"></div>
+        </div>
+
+        <!-- ===== FASE 5: Conexões entre Histórias — DESAFIO FINAL ===== -->
+        <div id="fase5" class="oculto">
+            <h2 class="fase-titulo">🔗 Fase 5 — Conexões entre Histórias</h2>
+            <p class="fase-subtitulo">Este é o desafio mais difícil! Relacione as histórias e encontre os pontos em comum.</p>
+
+            <div class="item-conexao">
+                <p><strong>1.</strong> Explique uma semelhança entre a trajetória de <strong>Maria Firmina dos Reis</strong> e <strong>Sonia Guimarães</strong>, considerando o contexto social de suas épocas:</p>
+                <textarea class="texto-longo" id="conexao1" placeholder="Sua resposta..."></textarea>
+            </div>
+
+            <div class="item-conexao">
+                <p><strong>2.</strong> De que forma o trabalho de <strong>Ada Lovelace</strong> e <strong>Jaqueline Góes de Jesus</strong> impacta a vida das pessoas hoje, mesmo sendo áreas diferentes?</p>
+                <textarea class="texto-longo" id="conexao2" placeholder="Sua resposta..."></textarea>
+            </div>
+
+            <div class="item-conexao">
+                <p><strong>3.</strong> Como a atuação de <strong>Ana Angélica Macêdo</strong> se relaciona com o legado de todas as outras mulheres desta lista? Qual é a mensagem comum que elas deixam para você?</p>
+                <textarea class="texto-longo" id="conexao3" placeholder="Sua resposta..."></textarea>
+            </div>
+
+            <div class="botoes">
+                <button class="btn-voltar" onclick="voltarFase(4)">← Voltar</button>
+                <button class="btn-concluir" onclick="concluirDesafio()">🏆 Concluir Desafio Final</button>
+            </div>
+            <div id="feedback5" class="feedback"></div>
+        </div>
+
+        <!-- ===== TELA DE RESULTADO ===== -->
+        <div id="resultadoFinal" class="oculto">
+            <div class="resultado-final">
+                <h2>🎉 Desafio Concluído!</h2>
+                <p id="mensagemFinal"></p>
+                <h2 id="pontuacaoFinal"></h2>
+                <p id="classificacaoFinal"></p>
+            </div>
+            <div class="botoes" style="justify-content: center;">
+                <button class="btn-avancar" onclick="reiniciarTudo()">🔄 Refazer Desafio</button>
+                <button class="btn-concluir" onclick="voltarAoMenu()">🏠 Voltar ao Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-sair" onclick="sair()">Sair</button>
+
+    <script>
+        // ========== VARIÁVEIS GLOBAIS ==========
+        let faseAtual = 1;
+        let pontos = 0;
+        let totalFases = 5;
+        let respostasFase2 = {
+            'ada-ano': '1815', 'ada-area': 'Matemática', 'ada-pioneira': 'Primeira programadora/algoritmo',
+            'maria-ano': '1822', 'maria-area': 'Literatura/Educação', 'maria-pioneira': 'Primeira romancista negra',
+            'sonia-ano': '1954', 'sonia-area': 'Física', 'sonia-pioneira': 'Primeira doutora em Física negra do Brasil',
+            'jaqueline-ano': '1976', 'jaqueline-area': 'Virologia/Medicina', 'jaqueline-pioneira': 'Sequenciou genoma do COVID-19 no Brasil'
+        };
+        let respostasFase3 = {
+            'af3-1': 'econ', 'af3-2': 'genero', 'af3-3': 'social', 'af3-4': 'educacional'
+        };
+
+        // ========== FUNÇÕES GERAIS ==========
+         function atualizarBarra() {
+             document.getElementById('barraProgresso').style.width = `${(faseAtual / totalFases) * 100}%`;
+             document.getElementById('faseAtual').textContent = `Fase ${faseAtual} de ${totalFases}`;
+             document.getElementById('pontos').textContent = `${pontos} pontos`;
+         }
+         function mostrarFase(num) {
+             for (let i = 1; i <= totalFases; i++) {
+                 document.getElementById(`fase${i}`).classList.add('oculto');
+             }
+             document.getElementById('resultadoFinal').classList.add('oculto');
+             document.getElementById(`fase${num}`).classList.remove('oculto');
+             faseAtual = num;
+             atualizarBarra();
+         }
+         function voltarFase(destino) {
+             mostrarFase(destino);
+         }
+         function sair() {
+             if (confirm('⚠️ Tem certeza que deseja sair? Todo o progresso será perdido!')) {
+                 window.location.href = 'modalidades.html';
+             }
+         }
+         // ========== FASE 1 ==========
+         function validarFase1() {
+             const r1 = document.getElementById('resp1-1').value.trim();
+             const r2 = document.getElementById('resp1-2').value.trim();
+             
+             if (r1.length < 15 || r2.length < 15) {
+                 document.getElementById('feedback1').innerHTML = '<span class="errada-msg">⚠️ Escreva uma resposta mais completa (pelo menos 15 caracteres em cada)</span>';
+                 return;
+             }
+             pontos += 20;
+             document.getElementById('feedback1').innerHTML = '<span class="correta-msg">✅ Excelente! Avançando...</span>';
+             setTimeout(() => mostrarFase(2), 1000);
+         }
+         // ========== FASE 2 ==========
+         function verificarFase2() {
+             let acertos = 0;
+             let total = Object.keys(respostasFase2).length;
+             let vazios = false;
+             for (const [id, valorCorreto] of Object.entries(respostasFase2)) {
+                 const valorUsuario = document.getElementById(id).value.trim();
+                 if (!valorUsuario) {
+                     vazios = true;
+                     continue;
+                 }
+                 if (valorUsuario.toLowerCase() === valorCorreto.toLowerCase()) {
+                     acertos++;
+                 }
+             }
+             if (vazios) {
+                 document.getElementById('feedback2').innerHTML = '<span class="errada-msg">⚠️ Preencha TODOS os campos!</span>';
+                 return;
+             }
+             pontos += acertos * 3;
+             document.getElementById('feedback2').innerHTML = `<span class="correta-msg">✅ Você acertou ${acertos} de ${total} campos!</span>`;
+             setTimeout(() => mostrarFase(3), 1200);
+         }
+         // ========== FASE 3 ==========
+         function verificarFase3() {
+             let acertos = 0;
+             let total = Object.keys(respostasFase3).length;
+             let naoRespondeu = false;
+             for (const [nome, valorCorreto] of Object.entries(respostasFase3)) {
+                 const selecionado = document.querySelector(`input[name="${nome}"]:checked`);
+                 if (!selecionado) {
+                     naoRespondeu = true;
+                     continue;
+                 }
+                 if (selecionado.value === valorCorreto) {
+                     acertos++;
+                     document.getElementById(nome).classList.add('correta');
+                 } else {
+                     document.getElementById(nome).classList.add('errada');
+                 }
+             }
+             if (naoRespondeu) {
+                 document.getElementById('feedback3').innerHTML = '<span class="errada-msg">⚠️ Responda TODAS as afirmações!</span>';
+                 return;
+             }
+             pontos += acertos * 5;
+             document.getElementById('feedback3').innerHTML = `<span class="correta-msg">✅ ${acertos} de ${total} corretas!</span>`;
+             setTimeout(() => mostrarFase(4), 1200);
+         }
+         // ========== FASE 4 ==========
+         function validarFase4() {
+             const texto = document.getElementById('respostaSintese').value.trim();
+             const frases = texto.split(/[.!?]+/).filter(f => f.trim().length > 0);
+             
+             if (texto.length < 40) {
+                 document.getElementById('feedback4').innerHTML = '<span class="errada-msg">⚠️ Escreva um pouco mais — sua resposta deve ter pelo menos 40 caracteres.</span>';
+                 return;
+             }
+             if (frases.length < 3) {
+                 document.getElementById('feedback4').innerHTML = '<span class="errada-msg">⚠️ Use pelo menos 3 frases em seu texto.</span>';
+                 return;
+             }
+             
+             pontos += 25;
+             document.getElementById('feedback4').innerHTML = '<span class="correta-msg">✅ Ótimo texto! Avançando para a fase final...</span>';
+             setTimeout(() => mostrarFase(5), 1200);
+         }
+         // ========== FASE 5 — DESAFIO FINAL ==========
+         function concluirDesafio() {
+             const c1 = document.getElementById('conexao1').value.trim();
+             const c2 = document.getElementById('conexao2').value.trim();
+             const c3 = document.getElementById('conexao3').value.trim();
+             
+             if (c1.length < 25 || c2.length < 25 || c3.length < 25) {
+                 document.getElementById('feedback5').innerHTML = '<span class="errada-msg">⚠️ Responda todas as perguntas com pelo menos 25 caracteres cada.</span>';
+                 return;
+             }
+             
+             pontos += 30;
+             salvarResultado();
+             mostrarResultado();
+         }
+         function mostrarResultado() {
+             mostrarFase(99);
+             document.getElementById('resultadoFinal').classList.remove('oculto');
+             
+             let mensagem, classificacao;
+             if (pontos >= 95) {
+                 mensagem = '🌟 Você demonstrou uma compreensão profunda e sensível sobre a importância dessas mulheres. Você é um verdadeiro guardião dessa história!';
+                 classificacao = '🏆 Nível: Mestre em História e Cidadania';
+             } else if (pontos >= 75) {
+                 mensagem = '👏 Excelente trabalho! Você compreendeu bem as conexões entre essas histórias e sua importância.';
+                 classificacao = '🥇 Nível: Pesquisador(a) Júnior';
+             } else if (pontos >= 55) {
+                 mensagem = '👍 Bom desempenho! Você refletiu sobre esses temas. Continue se aprofundando nessas histórias fascinantes.';
+                 classificacao = '🥈 Nível: Explorador(a) Curioso(a)';
+             } else {
+                 mensagem = '💚 O mais importante é a reflexão que você fez hoje. Revisar essas histórias sempre vale a pena — elas são parte de nós!';
+                 classificacao = '🌱 Nível: Aprendiz Inspirado(a)';
+             }
+             
+             document.getElementById('mensagemFinal').textContent = mensagem;
+             document.getElementById('pontuacaoFinal').textContent = `${pontos} / 100`;
+             document.getElementById('classificacaoFinal').textContent = classificacao;
+         }
+         function salvarResultado() {
+             localStorage.setItem('pontosJogador', parseInt(localStorage.getItem('pontosJogador') || '0') + pontos);
+         }
+         function reiniciarTudo() {
+             pontos = 0;
+             mostrarFase(1);
+             // Limpa todos os campos
+             document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+             document.querySelectorAll('.afirmacao-analise').forEach(el => {
+                 el.classList.remove('correta', 'errada');
+             });
+             document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+         }
+         function voltarAoMenu() {
+             window.location.href = 'modalidades.html';
+         }
+         atualizarBarra();
+     </script>
+ </body>
+ </html>

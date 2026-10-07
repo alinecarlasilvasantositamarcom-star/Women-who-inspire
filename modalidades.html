@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modalidades de Jogo — Mulheres que Inspiram</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #359668, #2E8B57);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .cabecalho {
+            text-align: center;
+            color: white;
+            margin-bottom: 2.5rem;
+        }
+        .cabecalho h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .cabecalho p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .grid-modalidades {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+        .card-modalidade {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .card-modalidade:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .card-modalidade h3 {
+            color: #2E8B57;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card-modalidade p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .destaque {
+            border: 3px solid #FFD700;
+            background: #fffef5;
+        }
+        .destaque h3 {
+            color: #B88600;
+        }
+        .btn-voltar {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-top: 2rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-voltar:hover {
+            background: rgba(255,255,255,0.3);
+        }
+</style>
+
+</head>
+<body>
+
+    <button class="btn-leitura" onclick="alternarLeitura()">🔇 Leitura: DESLIGADA</button>
+
+    <div class="cabecalho">
+        <h1>🎮 Escolha uma Modalidade</h1>
+        <p>Aprenda sobre mulheres incríveis de forma divertida!</p>
+    </div>
+
+    <div class="grid-modalidades">
+        <div class="card-modalidade" onclick="window.location.href='verdadeiro-falso.html'">
+            <h3>✓ Verdadeiro ou Falso</h3>
+            <p>Leia a afirmação e decida se é verdadeira ou falsa sobre essas mulheres.</p>
+        </div>
+
+        <div class="card-modalidade" onclick="window.location.href='quem-sou-eu.html'">
+            <h3>🔍 Quem Sou Eu?</h3>
+            <p>Leia as pistas e descubra qual cientista ou escritora está sendo descrita.</p>
+        </div>
+
+        <div class="card-modalidade" onclick="window.location.href='ordem-historica.html'">
+            <h3>📅 Ordem Histórica</h3>
+            <p><strong> Nivel medio</strong> cada mulher pelo ano de nascimento, do mais antigo ao mais recente.</p>
+        </div>
+
+        <div class="card-modalidade" onclick="window.location.href='ligue-as-colunas.html'">
+            <h3>🔗 Ligue as Colunas</h3>
+            <p>Associe cada nome à sua principal contribuição e conquista.</p>
+        </div>
+
+        <div class="card-modalidade" onclick="window.location.href='desafio-relampago.html'">
+            <h3>⚡ Desafio Relâmpago</h3>
+            <p>Perguntas rápidas de múltipla escolha — responda com atenção!</p>
+        </div>
+
+        <div class="card-modalidade destaque" onclick="window.location.href='desafio-final.html'">
+            <h3>🏆 Desafio Final</h3>
+            <p><strong>Nível Difícil!</strong> Análise de texto, reflexão e conexões entre todas as histórias. O desafio completo!</p>
+        </div>
+    </div>
+
+    <button class="btn-voltar" onclick="window.location.href='index.html'">← Voltar à Página Principal</button>
+
+</body>
+</html>

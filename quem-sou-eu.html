@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quem Sou Eu? — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #359668, #2E8B57); 
+            min-height: 100vh; 
+            padding: 2rem; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        .barra-topo {
+            background: white; 
+            border-radius: 8px; 
+            padding: 0.6rem 1rem;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .barra-progresso { 
+            width: 600px; 
+            height: 6px; 
+            background: rgba(255,255,255,0.3); 
+            border-radius: 3px; 
+            margin-bottom: 2rem; 
+        }
+        .progresso { 
+            height: 100%; 
+            background: white; 
+            width: 25%; 
+            transition: width 0.3s; 
+        }
+        .card {
+            background: white; 
+            border-radius: 8px; 
+            padding: 2rem;
+            max-width: 600px; 
+            width: 100%; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .numero-pergunta {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+        .pistas {
+            margin-bottom: 1.5rem;
+        }
+        .pistas p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+        .quem-sou-eu {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        .alternativa {
+            background: #2E8B57;
+            color: white;
+            padding: 0.9rem 1.2rem;
+            border-radius: 6px;
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .alternativa:hover { background: #267d4e; }
+        .alternativa.correta { background: #28a745; }
+        .alternativa.errada { background: #dc3545; }
+        .btn-sair {
+            background: #e9ecef;
+            color: #333;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            align-self: flex-start;
+        }
+        .feedback {
+            margin-top: 1rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 1.5rem;
+        }
+        .correta-msg { color: #28a745; }
+        .errada-msg { color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <div class="barra-topo">
+        <span>🔍 Quem Sou Eu?</span>
+        <span id="numQuestao">1 / 4</span>
+        <span id="pontos">0 pontos</span>
+        <span id="tentativas">20</span>
+    </div>
+
+    <div class="barra-progresso">
+        <div class="progresso" id="barraProgresso"></div>
+    </div>
+
+    <div class="card">
+        <p class="numero-pergunta" id="numeroPergunta">Pergunta 1 de 4</p>
+        
+        <div class="pistas" id="pistas">
+            <p>1. Nasceu em 1815, na Inglaterra</p>
+            <p>2. Filha do poeta Lord Byron</p>
+            <p>3. Trabalhou com Charles Babbage</p>
+            <p>4. É considerada a primeira programadora de computadores da história</p>
+        </div>
+        
+        <p class="quem-sou-eu">Quem sou eu?</p>
+
+        <div id="areaAlternativas">
+            <div class="alternativa" onclick="responder(this, false)">Maria Firmina dos Reis</div>
+            <div class="alternativa" onclick="responder(this, true)">Ada Lovelace</div>
+            <div class="alternativa" onclick="responder(this, false)">Enedina Alves Marques</div>
+            <div class="alternativa" onclick="responder(this, false)">Sonia Guimarães</div>
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <button class="btn-sair" onclick="sair()">Sair</button>
+
+    <script>
+        let questaoAtual = 1;
+        let totalQuestoes = 4;
+        let pontos = 0;
+        let tentativas = 20;
+        let respondido = false;
+
+        const perguntas = [
+            {
+                pistas: [
+                    '1. Nasceu em 1815, na Inglaterra',
+                    '2. Filha do poeta Lord Byron',
+                    '3. Trabalhou com Charles Babbage',
+                    '4. É considerada a primeira programadora de computadores da história'
+                ],
+                alternativas: ['Maria Firmina dos Reis', 'Ada Lovelace', 'Enedina Alves Marques', 'Sonia Guimarães'],
+                correta: 1
+            },
+            {
+                pistas: [
+                    '1. Nasceu em 1822, no Maranhão',
+                    '2. Foi professora e escritora',
+                    '3. Escreveu o romance "Úrsula"',
+                    '4. É considerada a primeira romancista brasileira negra'
+                ],
+                alternativas: ['Ana Angélica Macêdo', 'Maria Firmina dos Reis', 'Jaqueline Góes de Jesus', 'Sonia Guimarães'],
+                correta: 1
+            },
+            {
+                pistas: [
+                    '1. Nasceu em 1908, no Paraná',
+                    '2. Formou-se em Engenharia Civil',
+                    '3. Foi a primeira mulher negra engenheira do Brasil',
+                    '4. Trabalhou na Secretaria de Viação e Obras Públicas do Paraná'
+                ],
+                alternativas: ['Enedina Alves Marques', 'Ada Lovelace', 'Maria Firmina dos Reis', 'Sonia Guimarães'],
+                correta: 0
+            },
+            {
+                pistas: [
+                    '1. Nasceu em 1976, em São Paulo',
+                    '2. É pesquisadora em virologia e medicina',
+                    '3. Trabalhou no Instituto Butantan',
+                    '4. Liderou o sequenciamento do genoma do COVID-19 no Brasil'
+                ],
+                alternativas: ['Sonia Guimarães', 'Jaqueline Góes de Jesus', 'Ana Angélica Macêdo', 'Enedina Alves Marques'],
+                correta: 1
+            }
+        ];
+
+        function carregarQuestao() {
+            respondido = false;
+            const q = perguntas[questaoAtual - 1];
+            
+            document.getElementById('numQuestao').textContent = `${questaoAtual} / ${totalQuestoes}`;
+            document.getElementById('numeroPergunta').textContent = `Pergunta ${questaoAtual} de ${totalQuestoes}`;
+            document.getElementById('barraProgresso').style.width = `${(questaoAtual / totalQuestoes) * 100}%`;
+            document.getElementById('pontos').textContent = `${pontos} pontos`;
+            document.getElementById('tentativas').textContent = tentativas;
+            document.getElementById('feedback').innerHTML = '';
+            
+            document.getElementById('pistas').innerHTML = q.pistas.map(p => `<p>${p}</p>`).join('');
+            
+            const area = document.getElementById('areaAlternativas');
+            area.innerHTML = '';
+            q.alternativas.forEach((nome, indice) => {
+                const div = document.createElement('div');
+                div.className = 'alternativa';
+                div.textContent = nome;
+                div.onclick = () => responder(div, indice === q.correta);
+                area.appendChild(div);
+            });
+        }
+
+        function responder(elemento, estaCorreta) {
+            if (respondido) return;
+            respondido = true;
+            
+            const todas = document.querySelectorAll('.alternativa');
+            todas.forEach(el => el.style.pointerEvents = 'none');
+            
+            if (estaCorreta) {
+                elemento.classList.add('correta');
+                document.getElementById('feedback').innerHTML = '<span class="correta-msg">✅ Parabéns! Você acertou!</span>';
+                pontos += 15;
+            } else {
+                elemento.classList.add('errada');
+                document.getElementById('feedback').innerHTML = '<span class="errada-msg">❌ Não foi dessa vez!</span>';
+                tentativas--;
+            }
+
+            document.getElementById('pontos').textContent = `${pontos} pontos`;
+            document.getElementById('tentativas').textContent = tentativas;
+
+            setTimeout(() => {
+                if (questaoAtual < totalQuestoes) {
+                    questaoAtual++;
+                    carregarQuestao();
+                } else {
+                    salvarResultado();
+                    alert(`🎉 Parabéns! Você concluiu com ${pontos} pontos!`);
+                    window.location.href = 'modalidades.html';
+                }
+            }, 1500);
+        }
+
+        function salvarResultado() {
+            localStorage.setItem('pontosJogador', parseInt(localStorage.getItem('pontosJogador') || '0') + pontos);
+        }
+
+        function sair() {
+            if (confirm('Tem certeza que deseja sair? Seu progresso será perdido.')) {
+                window.location.href = 'modalidades.html';
+            }
+        }
+
+        carregarQuestao();
+    </script>
+
+</body>
+</html>

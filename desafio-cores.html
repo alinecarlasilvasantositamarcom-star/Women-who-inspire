@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio das Cores — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f8f9fa; min-height: 100vh; padding: 2rem; }
+        .cabecalho-desafio {
+            text-align: center; margin-bottom: 2rem;
+            display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+        }
+        .cabecalho-desafio h1 { color: #1B5E20; }
+        .cabecalho-desafio p { color: #555; }
+        button { padding: 0.6rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; font-weight: 600; }
+        .btn-secundario { background: #e0e0e0; color: #333; }
+        .btn-secundario:hover { background: #d0d0d0; }
+        .container-cores { max-width: 700px; margin: 0 auto; }
+        .area-cores { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
+        .cor-bola {
+            width: 60px; height: 60px; border-radius: 50%; cursor: grab;
+            border: 3px solid #333; transition: transform 0.2s;
+        }
+        .cor-bola:hover { transform: scale(1.1); }
+        #cor-vermelha { background: #e74c3c; }
+        #cor-amarela { background: #f1c40f; }
+        #cor-verde { background: #27ae60; }
+        #cor-azul { background: #3498db; }
+        .area-espacos { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+        .espaco-cor {
+            height: 120px; border: 3px dashed #bbb; border-radius: 8px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #f0f0f0; transition: all 0.3s; padding: 0.8rem; text-align: center;
+        }
+        .espaco-cor.preenchido { border-style: solid; border-color: #666; }
+        .texto-espaco { color: #888; font-size: 0.9rem; }
+        .mensagem-cor { text-align: center; margin: 1rem 0; min-height: 2rem; font-weight: bold; }
+        .botoes-inferiores { text-align: center; margin-top: 2rem; }
+    </style>
+</head>
+<body class="tela-desafio-cores">
+
+    <div class="cabecalho-desafio">
+        <h1>🎨 Desafio das Cores</h1>
+        <p>Escolha uma cor e coloque no espaço correto. Faça a correspondência de cada vez.</p>
+        <p>Acertos: <span id="contadorAcertos">0</span>/4 | Tentativas: <span id="contadorTentativas">0</span>/4</p>
+        <button onclick="voltarMenu()" class="btn-secundario">← Voltar ao Menu</button>
+        </div>
+
+    <div class="container-cores">
+        <div class="area-cores">
+            <div class="cor-bola" id="cor-vermelha" draggable="true" data-cor="vermelha"></div>
+            <div class="cor-bola" id="cor-amarela" draggable="true" data-cor="amarela"></div>
+            <div class="cor-bola" id="cor-verde" draggable="true" data-cor="verde"></div>
+            <div class="cor-bola" id="cor-azul" draggable="true" data-cor="azul"></div>
+        </div>
+
+        <div class="area-espacos">
+            <div class="espaco-cor" id="espaco-1" data-correta="vermelha">
+                <span class="texto-espaco">Arraste uma cor aqui</span>
+            </div>
+            <div class="espaco-cor" id="espaco-2" data-correta="amarela">
+                <span class="texto-espaco">Arraste uma cor aqui</span>
+            </div>
+            <div class="espaco-cor" id="espaco-3" data-correta="verde">
+                <span class="texto-espaco">Arraste uma cor aqui</span>
+            </div>
+            <div class="espaco-cor" id="espaco-4" data-correta="azul">
+                <span class="texto-espaco">Arraste uma cor aqui</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="mensagemCor" class="mensagem-cor"></div>
+
+    <div class="botoes-inferiores">
+        <button onclick="reiniciarDesafio()" class="btn-secundario">🔄 Reiniciar</button>
+    </div>
+
+    <script>
+        const sequenciaCorreta = {
+            1: { cor: 'vermelha', nome: 'Ana Angélica Macêdo', info: 'Pesquisadora que incentiva meninas na ciência.' },
+            2: { cor: 'amarela', nome: 'Sonia Guimarães', info: 'Primeira mulher negra doutora em Física no Brasil.' },
+            3: { cor: 'verde', nome: 'Maria Firmina dos Reis', info: 'Primeira romancista brasileira e defensora da abolição.' },
+            4: { cor: 'azul', nome: 'Jaqueline Góes de Jesus', info: 'Cientista que sequenciou o genoma da COVID-19 no Brasil.' }
+        };
+        let acertos = 0;
+        let tentativas = 0;
+
+        document.querySelectorAll('.cor-bola').forEach(bola => {
+            bola.addEventListener('dragstart', function(e) {
+                e.dataTransfer.setData('cor', this.dataset.cor);
+            });
+        });
+
+        document.querySelectorAll('.espaco-cor').forEach(espaco => {
+            espaco.addEventListener('dragover', e => e.preventDefault());
+            espaco.addEventListener('drop', function(e) {
+                e.preventDefault();
+                const corSoltada = e.dataTransfer.getData('cor');
+                const numeroEspaco = parseInt(this.id.split('-')[1]);
+                const espacoCorreto = sequenciaCorreta[numeroEspaco].cor;
+
+                if (corSoltada === espacoCorreto) {
+                    acertos++;
+                    this.classList.add('preenchido');
+                    this.setAttribute('data-preenchido', corSoltada);
+                    this.innerHTML = `<div class="cor-bola" style="background:${corSoltada === 'vermelha' ? '#e74c3c' : corSoltada === 'amarela' ? '#f1c40f' : corSoltada === 'verde' ? '#27ae60' : '#3498db'}; width: 60px; height: 60px; border-radius: 50%; border: 3px solid #333;" draggable="false"></div><span class="texto-espaco">${sequenciaCorreta[numeroEspaco].nome}</span>`;
+                    document.getElementById('mensagemCor').textContent = `Correto! ${sequenciaCorreta[numeroEspaco].nome} é a pessoa certa para essa cor.`;
+                    document.getElementById('contadorAcertos').textContent = acertos;
+                } else {
+                    tentativas++;
+                    this.classList.add('preenchido');
+                    this.setAttribute('data-preenchido', corSoltada);
+                    this.innerHTML = `<div class="cor-bola" style="background:${corSoltada === 'vermelha' ? '#e74c3c' : corSoltada === 'amarela' ? '#f1c40f' : corSoltada === 'verde' ? '#27ae60' : '#3498db'}; width: 60px; height: 60px; border-radius: 50%; border: 3px solid #333;" draggable="false"></div><span class="texto-espaco">Errou! Tente novamente.</span>`;
+                    document.getElementById('mensagemCor').textContent = `Errado! Essa não é a cor correta. Tente outra.`;
+                }
+
+                document.getElementById('contadorTentativas').textContent = tentativas;
+                this.style.pointerEvents = 'none';
+
+                if (acertos + tentativas >= 4) {
+                    const total = acertos + tentativas;
+                    document.getElementById('mensagemCor').textContent = `Fim do jogo! Você acertou ${acertos} de ${total}.`;
+                }
+            });
+        });
+
+        function reiniciarDesafio() {
+            acertos = 0;
+            tentativas = 0;
+            document.getElementById('contadorAcertos').textContent = acertos;
+            document.getElementById('contadorTentativas').textContent = tentativas;
+            document.getElementById('mensagemCor').textContent = '';
+
+            document.querySelectorAll('.espaco-cor').forEach(espaco => {
+                espaco.classList.remove('preenchido');
+                espaco.style.pointerEvents = 'auto';
+                espaco.innerHTML = '<span class="texto-espaco">Arraste uma cor aqui</span>';
+            });
+        }
+
+        function voltarMenu() {
+            window.location.href = 'principal.html';
+        }
+    </script>
+</body>
+</html>
+    

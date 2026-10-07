@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verdadeiro ou Falso — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #359668, #2E8B57); 
+            min-height: 100vh; 
+            padding: 2rem; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        .barra-topo {
+            background: white; 
+            border-radius: 8px; 
+            padding: 0.6rem 1rem;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            max-width: 500px;
+            width: 100%;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .barra-progresso { 
+            width: 500px; 
+            height: 6px; 
+            background: rgba(255,255,255,0.3); 
+            border-radius: 3px; 
+            margin-bottom: 2rem; 
+        }
+        .progresso { 
+            height: 100%; 
+            background: white; 
+            width: 16.66%; 
+            transition: width 0.3s; 
+        }
+        .card {
+            background: white; 
+            border-radius: 8px; 
+            padding: 1.8rem;
+            max-width: 500px; 
+            width: 100%; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .titulo-card {
+            font-size: 1rem;
+            color: #444;
+            margin-bottom: 1rem;
+        }
+        .afirmacao {
+            background: #f8f9fa;
+            padding: 1.2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        .botoes {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        button {
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.9; }
+        .btn-v {
+            background: #28a745;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            flex: 1;
+        }
+        .btn-f {
+            background: #dc3545;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            flex: 1;
+        }
+        .btn-sair {
+            background: #e9ecef;
+            color: #333;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            align-self: flex-start;
+        }
+        .feedback {
+            margin-top: 1rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 1.5rem;
+        }
+        .correta { color: #28a745; }
+        .errada { color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <div class="barra-topo">
+        <span>✓ Verdadeiro ou Falso</span>
+        <span id="numQuestao">1 / 6</span>
+        <span id="pontos">0 pontos</span>
+        <span id="tentativas">20</span>
+    </div>
+
+    <div class="barra-progresso">
+        <div class="progresso" id="barraProgresso"></div>
+    </div>
+
+    <div class="card">
+        <p class="titulo-card" id="numeroAfirmacao">Afirmação 1 de 6</p>
+        <p class="afirmacao" id="textoAfirmacao">"Ada Lovelace escreveu o primeiro algoritmo para uma máquina."</p>
+
+        <div class="botoes">
+            <button class="btn-v" onclick="responder(true)">✓ VERDADEIRO</button>
+            <button class="btn-f" onclick="responder(false)">✗ FALSO</button>
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <button class="btn-sair" onclick="sair()">Sair</button>
+
+    <script>
+        let questaoAtual = 1;
+        let totalQuestoes = 6;
+        let pontos = 0;
+        let tentativas = 20;
+
+        const afirmacoes = [
+            { texto: '"Ada Lovelace escreveu o primeiro algoritmo para uma máquina."', correta: true },
+            { texto: '"Maria Firmina dos Reis escreveu o primeiro romance publicado no Brasil por uma mulher negra."', correta: true },
+            { texto: '"Enedina Alves Marques foi a primeira mulher negra a se formar em Engenharia no Paraná."', correta: true },
+            { texto: '"Sonia Guimarães é a primeira mulher negra doutora em Física no Brasil."', correta: true },
+            { texto: '"Jaqueline Góes de Jesus participou do sequenciamento do genoma do coronavírus no Brasil."', correta: true },
+            { texto: '"Ana Angélica Macêdo é uma renomada pesquisadora na área de medicina nuclear."', correta: false }
+        ];
+
+        function carregarQuestao() {
+            const q = afirmacoes[questaoAtual - 1];
+            document.getElementById('numQuestao').textContent = `${questaoAtual} / ${totalQuestoes}`;
+            document.getElementById('numeroAfirmacao').textContent = `Afirmação ${questaoAtual} de ${totalQuestoes}`;
+            document.getElementById('textoAfirmacao').textContent = q.texto;
+            document.getElementById('barraProgresso').style.width = `${(questaoAtual / totalQuestoes) * 100}%`;
+            document.getElementById('pontos').textContent = `${pontos} pontos`;
+            document.getElementById('tentativas').textContent = tentativas;
+            document.getElementById('feedback').innerHTML = '';
+        }
+
+        function responder(resposta) {
+            const q = afirmacoes[questaoAtual - 1];
+            const feedback = document.getElementById('feedback');
+            
+            if (resposta === q.correta) {
+                feedback.innerHTML = '<span class="correta">✅ Correto!</span>';
+                pontos += 10;
+            } else {
+                feedback.innerHTML = `<span class="errada">❌ Errado! A resposta é ${q.correta ? 'VERDADEIRO' : 'FALSO'}</span>`;
+                tentativas--;
+            }
+
+            document.getElementById('pontos').textContent = `${pontos} pontos`;
+            document.getElementById('tentativas').textContent = tentativas;
+
+            setTimeout(() => {
+                if (questaoAtual < totalQuestoes) {
+                    questaoAtual++;
+                    carregarQuestao();
+                } else {
+                    alert(`🎉 Parabéns! Você concluiu com ${pontos} pontos!`);
+                    salvarResultado();
+                    window.location.href = 'modalidades.html';
+                }
+            }, 1200);
+        }
+
+        function salvarResultado() {
+            localStorage.setItem('pontosJogador', parseInt(localStorage.getItem('pontosJogador') || '0') + pontos);
+        }
+
+        function sair() {
+            if (confirm('Tem certeza que deseja sair? Seu progresso será perdido.')) {
+                window.location.href = 'modalidades.html';
+            }
+        }
+
+        carregarQuestao();
+    </script>
+
+</body>
+</html>

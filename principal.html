@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        :root {
+            --primaria: #1B5E20; --secundaria: #2E7D32; --destaque: #0288D1;
+            --fundo: #f8f9fa; --texto: #212121; --borda: #e0e0e0; --cartao: #ffffff;
+        }
+        body { background: var(--fundo); color: var(--texto); min-height: 100vh; }
+        body.alto-contraste { --primaria: #000; --secundaria: #000; --fundo: #000; --texto: #fff; --borda: #fff; --cartao: #111; }
+        body.sem-movimento * { animation: none !important; transition: none !important; }
+        .barra-acessibilidade {
+            background: var(--primaria); color: white; padding: 0.8rem 1.5rem;
+            display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; justify-content: space-between;
+        }
+        .barra-acessibilidade button {
+            background: rgba(255,255,255,0.25); color: white; border: none; padding: 0.4rem 0.8rem;
+            border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+        }
+        .info-jogador { display: flex; gap: 1.5rem; font-size: 0.95rem; }
+        .container-principal { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .cabecalho-principal { text-align: center; margin-bottom: 2.5rem; }
+        .cabecalho-principal h1 { color: var(--primaria); font-size: 2rem; margin-bottom: 0.5rem; }
+        .grid-modos {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem; margin-bottom: 3rem;
+        }
+        .cartao-modo {
+            background: var(--cartao); border: 1px solid var(--borda); border-radius: 12px;
+            padding: 1.8rem; text-align: center; cursor: pointer; transition: all 0.3s;
+        }
+        .cartao-modo:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-color: var(--primaria); }
+        .icone-modo { font-size: 2.5rem; margin-bottom: 0.8rem; }
+        .cartao-modo h3 { color: var(--primaria); margin-bottom: 0.5rem; }
+        .cartao-modo p { font-size: 0.9rem; color: #666; }
+        .secao-recursos { margin-top: 3rem; }
+        .secao-recursos h3 { text-align: center; color: var(--primaria); margin-bottom: 1.5rem; font-size: 1.4rem; }
+        .grid-recursos {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem;
+        }
+        .recurso-item {
+            background: var(--cartao); border: 1px solid var(--borda); border-radius: 8px;
+            padding: 1.2rem; text-align: center;
+        }
+        .icone-recurso { width: 48px; height: 48px; margin-bottom: 0.8rem; }
+        .recurso-item h4 { color: var(--primaria); margin-bottom: 0.4rem; }
+        .recurso-item p { font-size: 0.85rem; color: #666; }
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-conteudo {
+            background: var(--cartao); padding: 2rem; border-radius: 12px; max-width: 450px; width: 90%;
+            text-align: center; position: relative;
+        }
+        .fechar { position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; cursor: pointer; color: #666; }
+        .roleta-container { margin: 1.5rem 0; }
+        canvas { border-radius: 50%; background: #f0f0f0; }
+        button { padding: 0.7rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 600; margin: 0.3rem; }
+        .btn-principal { background: var(--primaria); color: white; }
+        .btn-principal:hover { background: var(--secundaria); }
+        .btn-secundario { background: #e0e0e0; color: #333; }
+        .qrcode-placeholder { margin: 1rem 0; }
+        .qrcode-placeholder img { width: 180px; height: 180px; }
+    </style>
+</head>
+<body class="tela-principal">
+
+    <div class="barra-acessibilidade">
+        <button onclick="aumentarFonte()">A+</button>
+        <button onclick="alternarContraste()">Alto contraste</button>
+        <button onclick="alternarMovimento()">Reduzir movimento</button>
+        <button onclick="alternarSom()">🔊 Som</button>
+        <div class="info-jogador">
+            <span>💰 Pontos: <strong id="pontosJogador">0</strong></span>
+            <span>🔄 Chances: <strong id="chancesJogador">3</strong></span>
+        </div>
+    </div>
+
+    <div class="container-principal">
+        <div class="cabecalho-principal">
+            <h1>Mulheres que Inspiram</h1>
+            <p>Jogo digital acessível — ciência, tecnologia, cultura e AEE</p>
+        </div>
+
+        <div class="grid-modos">
+            <div class="cartao-modo" onclick="comecarJogo()">
+                <div class="icone-modo">🎯</div>
+                <h3>Começar Jogo</h3>
+                <p>Versão completa — 6 modalidades de desafio</p>
+            </div>
+            <div class="cartao-modo" onclick="abrirModoTeste()">
+                <div class="icone-modo">♿</div>
+                <h3>Modo Teste</h3>
+                <p>Versão adaptada para AEE</p>
+            </div>
+            <div class="cartao-modo" onclick="abrirDesafioCores()">
+                <div class="icone-modo">🎨</div>
+                <h3>Desafio das Cores</h3>
+                <p>Atividade de associação e memória</p>
+            </div>
+            <div class="cartao-modo" onclick="abrirRoleta()">
+                <div class="icone-modo">🎡</div>
+                <h3>Ganhe Tentativas</h3>
+                <p>Gire a roleta e ganhe pontos e chances</p>
+            </div>
+            <div class="cartao-modo" onclick="abrirRanking()">
+                <div class="icone-modo">🏆</div>
+                <h3>Ranking</h3>
+                <p>Veja os melhores jogadores</p>
+            </div>
+            <div class="cartao-modo" onclick="abrirConvidar()">
+                <div class="icone-modo">👥</div>
+                <h3>Convidar Amigos</h3>
+                <p>Jogue com até 50 pessoas</p>
+            </div>
+        </div>
+
+        <div class="secao-recursos">
+            <h3>Recursos de Apoio</h3>
+            <div class="grid-recursos">
+                <div class="recurso-item">
+                    <img src="imagens/icone-visual.png" alt="Ícone de Visão" class="icone-recurso">
+                    <h4>Visual</h4><p>Imagens, símbolos e cores acessíveis</p>
+                </div>
+                <div class="recurso-item">
+                    <img src="imagens/icone-gradual.png" alt="Ícone de Progresso" class="icone-recurso">
+                    <h4>Gradual</h4><p>Desafios do básico ao avançado</p>
+                </div>
+                <div class="recurso-item">
+                    <img src="imagens/icone-tentativa.png" alt="Ícone de Reinício" class="icone-recurso">
+                    <h4>Nova Tentativa</h4><p>O erro não encerra a atividade</p>
+                </div>
+                <div class="recurso-item">
+                    <img src="imagens/icone-instrucoes.png" alt="Ícone de Áudio" class="icone-recurso">
+                    <h4>Instruções</h4><p>Leitura automática disponível</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalRoleta" class="modal" style="display:none;">
+        <div class="modal-conteudo">
+            <span class="fechar" onclick="fecharRoleta()">&times;</span>
+            <h2>🎡 Roleta de Recompensas</h2>
+            <p>Gire e ganhe pontos e chances!</p>
+            <div class="roleta-container">
+                <canvas id="roleta" width="200" height="200"></canvas><br>
+                <button onclick="girarRoleta()" class="btn-principal">Girar!</button>
+            </div>
+            <p id="resultadoRoleta"></p>
+        </div>
+    </div>
+
+    <div id="modalConvidar" class="modal" style="display:none;">
+        <div class="modal-conteudo">
+            <span class="fechar" onclick="fecharConvidar()">&times;</span>
+            <h2>👥 Convidar Amigos</h2>
+            <p>Escaneie o QR Code para jogar juntos!</p>
+            <div class="qrcode-placeholder">
+                <img src="/Qr-code.jpeg" alt="QR code quadrado em preto e branco, com padrões em blocos e pequenos quadrados organizados em linhas e colunas, usado para acesso rápido ao jogo por celular. O código está centralizado em um fundo simples e limpo, sem outros elementos visuais. A imagem transmite um convite digital para participar de uma partida em grupo ou individual, com tom neutro e funcional.">
+            </div>
+            <p>Modo de jogo:</p>
+            <button onclick="definirModo('individual')" class="btn-secundario">Individual</button>
+            <button onclick="definirModo('multiplayer')" class="btn-principal">Multiplayer (até 50 jogadores)</button>
+        </div>
+    </div>
+
+    <script>
+        let pontos = parseInt(localStorage.getItem('pontosJogador') || '0');
+        let chances = parseInt(localStorage.getItem('chancesJogador') || '3');
+        let leituraAtiva = false;
+        let tamanhoFonte = 100;
+
+        function atualizarInfoJogador() {
+            document.getElementById('pontosJogador').textContent = pontos;
+            document.getElementById('chancesJogador').textContent = chances;
+            localStorage.setItem('pontosJogador', pontos);
+            localStorage.setItem('chancesJogador', chances);
+        }
+        atualizarInfoJogador();
+
+        function comecarJogo() { localStorage.setItem('modoJogo', 'original'); window.location.href = 'modalidades.html'; }
+        function abrirModoTeste() { window.location.href = 'modo-teste.html'; }
+        function abrirDesafioCores() { window.location.href = 'desafio-cores.html'; }
+        function abrirRanking() { window.location.href = 'ranking.html'; }
+        function abrirConvidar() { document.getElementById('modalConvidar').style.display = 'flex'; }
+        function fecharConvidar() { document.getElementById('modalConvidar').style.display = 'none'; }
+        function definirModo(modo) { localStorage.setItem('modoJogo', modo); alert(`Modo ${modo} selecionado!`); fecharConvidar(); }
+
+        function abrirRoleta() { document.getElementById('modalRoleta').style.display = 'flex'; desenharRoleta(); }
+        function fecharRoleta() { document.getElementById('modalRoleta').style.display = 'none'; }
+        function desenharRoleta() {
+            const canvas = document.getElementById('roleta');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const valores = [1,2,3,4,5,6,7,8];
+            const cores = ['#FF6B6B','#FF8E53','#FFD93D','#6BCB77','#4D96FF','#6B5B95','#FF6B95','#C065D8'];
+            const anguloFatia = (2 * Math.PI) / valores.length;
+            ctx.clearRect(0,0,200,200);
+            ctx.translate(100,100);
+            for(let i=0; i<valores.length; i++) {
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,90, i*anguloFatia, (i+1)*anguloFatia);
+                ctx.fillStyle = cores[i]; ctx.fill();
+                ctx.fillStyle = '#fff'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
+                ctx.fillText(valores[i], 0, 60);
+            }
+            ctx.translate(-100,-100);
+        }
+        function girarRoleta() {
+            const valores = [1,2,3,4,5,6,7,8];
+            const ganho = valores[Math.floor(Math.random() * valores.length)];
+            pontos += ganho; chances += Math.ceil(ganho / 2);
+            atualizarInfoJogador();
+            document.getElementById('resultadoRoleta').innerHTML = `🎉 Você ganhou <strong>${ganho} pontos</strong> e <strong>${Math.ceil(ganho/2)} chance(s)!</strong>`;
+        }
+
+        function aumentarFonte() { tamanhoFonte += 10; document.body.style.fontSize = `${tamanhoFonte}%`; }
+        function alternarContraste() { document.body.classList.toggle('alto-contraste'); }
+        function alternarMovimento() { document.body.classList.toggle('sem-movimento'); }
+        function alternarSom() {
+            leituraAtiva = !leituraAtiva;
+            alert(leituraAtiva ? '🔊 Leitura automática ativada' : '🔇 Leitura automática desativada');
+        }
+    </script>
+
+</body>
+</html>

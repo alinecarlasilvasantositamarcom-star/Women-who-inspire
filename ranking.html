@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f8f9fa; min-height: 100vh; padding: 2rem; }
+        .cabecalho { text-align: center; margin-bottom: 2.5rem; }
+        .cabecalho h1 { color: #1B5E20; font-size: 2rem; margin-bottom: 0.5rem; }
+        .tabela-ranking {
+            max-width: 600px; margin: 0 auto; background: white;
+            border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .cabecalho-tabela {
+            display: grid; grid-template-columns: 1fr 3fr 1fr;
+            background: #1B5E20; color: white; font-weight: bold; padding: 1rem;
+        }
+        .linha-jogador {
+            display: grid; grid-template-columns: 1fr 3fr 1fr;
+            padding: 1rem; border-bottom: 1px solid #eee; align-items: center;
+        }
+        .linha-jogador.destaque { background: #fff9c4; font-weight: bold; }
+        .posicao { font-size: 1.2rem; font-weight: bold; text-align: center; }
+        .ouro { color: #FFD700; }
+        .prata { color: #C0C0C0; }
+        .bronze { color: #CD7F32; }
+        .botoes { text-align: center; margin-top: 2rem; }
+        button {
+            padding: 0.8rem 1.8rem; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 1rem; font-weight: 600; background: #e0e0e0; color: #333;
+        }
+        button:hover { background: #d0d0d0; }
+        .sem-dados { text-align: center; padding: 3rem; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="cabecalho">
+        <h1>🏆 Ranking de Jogadores</h1>
+        <p>Veja quem está fazendo mais pontos!</p>
+    </div>
+
+    <div class="tabela-ranking">
+        <div class="cabecalho-tabela">
+            <div>Posição</div>
+            <div>Nome</div>
+            <div>Pontos</div>
+        </div>
+        <div id="corpoRanking">
+            <div class="sem-dados">
+                <p>Seja o primeiro a jogar e aparecer aqui! 🎮</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="botoes">
+        <button onclick="voltar()">← Voltar à Página Principal</button>
+    </div>
+
+    <script>
+        function carregarRanking() {
+            const corpo = document.getElementById('corpoRanking');
+            const jogadorPontos = localStorage.getItem('pontosJogador') || '0';
+            
+            const jogadores = [
+                { nome: 'Você', pontos: parseInt(jogadorPontos) }
+                // Você pode adicionar mais jogadores aqui
+            ].sort((a, b) => b.pontos - a.pontos);
+
+            if (jogadores[0].pontos === 0) {
+                corpo.innerHTML = '<div class="sem-dados"><p>Jogue e faça pontos para aparecer aqui! 🎮</p></div>';
+                return;
+            }
+
+            corpo.innerHTML = '';
+            jogadores.forEach((j, i) => {
+                const classePosicao = i === 0 ? 'ouro' : i === 1 ? 'prata' : i === 2 ? 'bronze' : '';
+                const destaque = j.nome === 'Você' ? 'destaque' : '';
+                corpo.innerHTML += `
+                    <div class="linha-jogador ${destaque}">
+                        <div class="posicao ${classePosicao}">${i + 1}º</div>
+                        <div>${j.nome}</div>
+                        <div><strong>${j.pontos}</strong></div>
+                    </div>
+                `;
+            });
+        }
+
+        function voltar() {
+            window.location.href = 'principal.html';
+        }
+
+        carregarRanking();
+    </script>
+
+</body>
+</html>

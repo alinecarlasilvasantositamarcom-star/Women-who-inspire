@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linha do Tempo — Mulheres que Inspiram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #359668, #2E8B57); 
+            min-height: 100vh; 
+            padding: 2rem; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        .barra-topo {
+            background: white; 
+            border-radius: 8px; 
+            padding: 0.6rem 1rem;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            max-width: 500px;
+            width: 100%;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .card {
+            background: white; 
+            border-radius: 8px; 
+            padding: 1.8rem;
+            max-width: 500px; 
+            width: 100%; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .instrucao {
+            font-size: 0.95rem;
+            color: #444;
+            margin-bottom: 1.5rem;
+        }
+        .item {
+            background: #2E8B57;
+            color: white;
+            padding: 0.9rem 1.2rem;
+            border-radius: 6px;
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .item:hover { background: #267d4e; }
+        .item.selecionado { background: #ffc107; color: #333; font-weight: bold; }
+        .selecionado-area {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #666;
+            font-size: 0.95rem;
+        }
+        .botoes {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        button {
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            padding: 0.7rem 1.2rem;
+            cursor: pointer;
+        }
+        .btn-reiniciar {
+            background: #e9ecef;
+            color: #333;
+        }
+        .btn-confirmar {
+            background: #2E8B57;
+            color: white;
+        }
+        .btn-sair {
+            background: #e9ecef;
+            color: #333;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            align-self: flex-start;
+        }
+        .feedback {
+            margin-top: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .correta { color: #28a745; }
+        .errada { color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <div class="barra-topo">
+        <span>📅 Linha do Tempo</span>
+        <span id="contador">0 / 4</span>
+        <span id="pontos">0 pontos</span>
+        <span id="tentativas">9</span>
+    </div>
+
+    <div class="card">
+        <p class="instrucao"><strong>Ordene por ano, do mais antigo ao mais recente:</strong><br>Selecione na ordem correta:</p>
+
+        <div id="listaItens">
+            <div class="item" onclick="selecionar(this, 0)" data-ano="1815">Ada Lovelace — 1815</div>
+            <div class="item" onclick="selecionar(this, 1)" data-ano="1822">Maria Firmina dos Reis — 1822</div>
+            <div class="item" onclick="selecionar(this, 2)" data-ano="1908">Enedina Alves Marques — 1908</div>
+            <div class="item" onclick="selecionar(this, 3)" data-ano="1954">Sonia Guimarães — 1954</div>
+        </div>
+
+        <div class="selecionado-area" id="selecionadoTexto">Selecionado: Nenhum ainda</div>
+
+        <div class="botoes">
+            <button class="btn-reiniciar" onclick="reiniciar()">Reiniciar</button>
+            <button class="btn-confirmar" onclick="confirmar()">Confirmar Ordem</button>
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <button class="btn-sair" onclick="sair()">Sair</button>
+
+    <script>
+        let selecao = [];
+        let pontos = 0;
+        let tentativas = 9;
+        const ordemCorreta = [0, 1, 2, 3];
+        const nomes = [
+            'Ada Lovelace — 1815',
+            'Maria Firmina dos Reis — 1822',
+            'Enedina Alves Marques — 1908',
+            'Sonia Guimarães — 1954'
+        ];
+
+        function atualizar() {
+            document.getElementById('contador').textContent = `${selecao.length} / 4`;
+            document.getElementById('pontos').textContent = `${pontos} pontos`;
+            document.getElementById('tentativas').textContent = tentativas;
+            
+            if (selecao.length === 0) {
+                document.getElementById('selecionadoTexto').textContent = 'Selecionado: Nenhum ainda';
+            } else {
+                document.getElementById('selecionadoTexto').textContent = 'Selecionado: ' + selecao.map(i => nomes[i]).join(' → ');
+            }
+        }
+
+        function selecionar(el, indice) {
+            if (selecao.includes(indice)) return;
+            selecao.push(indice);
+            el.classList.add('selecionado');
+            atualizar();
+        }
+
+        function reiniciar() {
+            selecao = [];
+            document.querySelectorAll('.item').forEach(i => i.classList.remove('selecionado'));
+            document.getElementById('feedback').innerHTML = '';
+            atualizar();
+        }
+
+        function confirmar() {
+            if (selecao.length !== 4) {
+                document.getElementById('feedback').innerHTML = '<span class="errada">⚠️ Selecione todos os itens!</span>';
+                return;
+            }
+
+            const correto = selecao.every((v, i) => v === ordemCorreta[i]);
+            
+            if (correto) {
+                document.getElementById('feedback').innerHTML = '<span class="correta">✅ Ordem correta!</span>';
+                pontos += 20;
+                salvarResultado();
+                setTimeout(() => {
+                    alert(`🎉 Você concluiu com ${pontos} pontos!`);
+                    window.location.href = 'modalidades.html';
+                }, 1500);
+            } else {
+                document.getElementById('feedback').innerHTML = '<span class="errada">❌ Ordem incorreta. Tente novamente!</span>';
+                tentativas--;
+                document.getElementById('tentativas').textContent = tentativas;
+                if (tentativas <= 0) {
+                    alert('😢 Suas tentativas acabaram!');
+                    window.location.href = 'modalidades.html';
+                }
+                setTimeout(reiniciar, 1500);
+            }
+        }
+
+        function salvarResultado() {
+            localStorage.setItem('pontosJogador', parseInt(localStorage.getItem('pontosJogador') || '0') + pontos);
+        }
+
+        function sair() {
+            if (confirm('Tem certeza que deseja sair? Seu progresso será perdido.')) {
+                window.location.href = 'modalidades.html';
+            }
+        }
+    </script>
+
+</body>
+</html>
